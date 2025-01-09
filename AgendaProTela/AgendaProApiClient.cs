@@ -133,6 +133,7 @@ namespace AgendaProTela
 
                         return JsonSerializer.Deserialize<Contact>(responseBody, options);
 
+
                     }
 
                     else if ((int)response.StatusCode >= 400 && (int)response.StatusCode <= 499)

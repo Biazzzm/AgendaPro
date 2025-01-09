@@ -31,6 +31,7 @@ namespace AgendaProTela
                     MessageBox.Show("Contato salvo com sucesso!");
 
                     CarregarDatagrid();
+                  
                 }
                 else
                 {
@@ -76,10 +77,11 @@ namespace AgendaProTela
 
                 }
 
-                LimparTexto();
+               
 
 
             }
+            LimparTexto();
         }
 
 
