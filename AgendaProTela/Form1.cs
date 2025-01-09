@@ -73,8 +73,6 @@ namespace AgendaProTela
                     }
 
 
-
-
                 }
 
                
@@ -103,14 +101,13 @@ namespace AgendaProTela
                     bool sucesso = await agendaProApiClient.DeleteAsync(idTextBox.Text);
                     CarregarDatagrid();
 
-                    if (sucesso == null)
+                    if (sucesso)
                     {
-                        MessageBox.Show($"Contato Deletado {idTextBox.Text} com sucesso");
+                        MessageBox.Show($"Contato {idTextBox.Text} Deletado com sucesso");
                     }
-
                     else
                     {
-                        MessageBox.Show("Erro ao deletar contato");
+                        MessageBox.Show($"Erro ao excluir contato");
                     }
                 }
              }
@@ -179,23 +176,32 @@ namespace AgendaProTela
             var email = linhaSelecionada.Cells["Email"].Value?.ToString();
             var phone = linhaSelecionada.Cells["Phone"].Value?.ToString();
 
-            try
-            {
-                var success = agendaProApiClient.UpdateAsync(id, name, email, phone).Result;
+            var message = $"Deseja atualizar contato com matrícula {idTextBox.Text}?";
 
-                if (success)
+            const string caption = "Form Closing";
+
+            var result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
                 {
-                    MessageBox.Show("Contato atualizado com sucesso!");
-                    CarregarDatagrid();
+                    var success = agendaProApiClient.UpdateAsync(id, name, email, phone).Result;
+
+                    if (success)
+                    {
+                        MessageBox.Show("Contato atualizado com sucesso!");
+                        CarregarDatagrid();
+                    }
+                    else
+                        MessageBox.Show("Erro ao atualizar contato.");
+
+
                 }
-                else
-                    MessageBox.Show("Erro ao atualizar contato.");
-
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
