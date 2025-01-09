@@ -1,5 +1,6 @@
 ﻿using AgendaPro.Api.Models;
 using AgendaPro.Api.Repositories;
+using AgendaPro.Api.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgendaPro.Api.Controllers
@@ -19,9 +20,25 @@ namespace AgendaPro.Api.Controllers
 
 
         [HttpPost("v1/contact")]
-        public async Task<IActionResult> PostAsync([FromBody] Contact model)
+        public async Task<IActionResult> PostAsync([FromBody] EditorViewModels model)
+
         {
-            await _contactRepository.CriarAsync(model);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            var contato = new Contact
+            {
+
+                Name = model.Name,
+                Email = model.Email,
+                Phone = model.Phone,
+            }
+                ;
+
+            await _contactRepository.CriarAsync(contato);
 
             return Ok(model);
 
@@ -50,10 +67,30 @@ namespace AgendaPro.Api.Controllers
 
         }
 
-        [HttpPut("v1/contact")]
-        public async Task<IActionResult> PutAsync([FromBody] Contact model)
+        [HttpPut("v1/contact/{Id}")]
+        public async Task<IActionResult> PutAsync([FromRoute] int Id,[FromBody] EditorViewModels model)
         {
-            await _contactRepository.AlterarAsync(model);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Dados do contato não podem ser nulos");
+            }
+
+            var contatoExistente = await _contactRepository.GetAsync(Id);
+
+            if (contatoExistente == null)
+            {
+                return NotFound("Contato não encontrado");
+
+            }
+
+            contatoExistente.Name = string.IsNullOrEmpty(model.Name) ? contatoExistente.Name : model.Name;
+            contatoExistente.Email = string.IsNullOrEmpty(model.Email) ? contatoExistente.Email : model.Email;
+            contatoExistente.Phone = string.IsNullOrEmpty(model.Phone) ? contatoExistente.Phone : model.Phone;
+
+
+
+            await _contactRepository.AlterarAsync(contatoExistente);
+
             return Ok();
 
         }

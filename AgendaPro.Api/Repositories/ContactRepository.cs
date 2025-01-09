@@ -50,7 +50,6 @@ namespace AgendaPro.Api.Repositories
 
             return await context.Contacts.FindAsync(id);
 
-           
 
         }
 
